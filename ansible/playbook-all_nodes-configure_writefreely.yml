@@ -1,0 +1,33 @@
+---
+- name: Install writefreely using the upstream binary
+  hosts: all
+  gather_facts: true
+  become: false
+
+  tasks:
+
+    - name: Create the configuration
+      ansible.builtin.template:
+        src: config.ini.j2
+        dest: /home/vagrant/writefreely/config.ini
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
+
+    - name: Run writefreely db init
+      ansible.builtin.command:
+        cmd: 'writefreely db init'
+        creates: /home/vagrant/writefreely/writefreely.db
+        chdir: /home/vagrant/writefreely/
+
+    - name: Run writefreely keys generate
+      ansible.builtin.command:
+        cmd: 'writefreely keys generate'
+        creates: /home/vagrant/writefreely/keys/cookies_enc.aes256
+        chdir: /home/vagrant/writefreely/
+
+    - name: Create the vagrant-libvirt user
+      ansible.builtin.shell:
+        cmd: 'writefreely user create --admin vagrant-libvirt:atotallysecurepassword && touch /home/vagrant/writefreely/.user_was_created_by_ansible'
+        creates: /home/vagrant/writefreely/.user_was_created_by_ansible
+        chdir: /home/vagrant/writefreely/
