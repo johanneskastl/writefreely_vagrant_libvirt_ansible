@@ -1,0 +1,42 @@
+---
+- name: Install writefreely
+  hosts: all
+  gather_facts: true
+  become: true
+
+  pre_tasks:
+
+    - name: Make sure rpm.install.excludedocs is set to false
+      ansible.builtin.lineinfile:
+        path: /etc/zypp/zypp.conf
+        regexp: rpm.install.excludedocs
+        line: rpm.install.excludedocs = no
+        owner: root
+        group: root
+        mode: '0644'
+
+  roles:
+
+    - role: johanneskastl.install_one_or_more_packages
+      packages_to_be_installed:
+        - writefreely
+
+  post_tasks:
+
+    - name: Create the directory /home/vagrant/writefreely/
+      ansible.builtin.file:
+        path: /home/vagrant/writefreely/
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0700'
+      become: false
+
+    - name: Copy /usr/share/doc/packages/writefreely/example-project-folder/ to /home/vagrant/writefreely/
+      ansible.builtin.copy:
+        src: /usr/share/doc/packages/writefreely/example-project-folder/
+        dest: /home/vagrant/writefreely/
+        remote_src: true
+        owner: vagrant
+        group: vagrant
+      become: false
