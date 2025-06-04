@@ -35,3 +35,6 @@
 
 - name: Run playbook-all_nodes-configure_writefreely.yml
   ansible.builtin.import_playbook: playbook-all_nodes-configure_writefreely.yml
+
+- name: Run playbook-all_nodes-start_writefreely_service.yml
+  ansible.builtin.import_playbook: playbook-all_nodes-start_writefreely_service.yml
