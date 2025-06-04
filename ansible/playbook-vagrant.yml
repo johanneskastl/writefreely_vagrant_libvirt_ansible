@@ -27,9 +27,6 @@
 # WriteFreely
 #
 
-- name: Run playbook-all_nodes-add_WriteFreely_repo.yml
-  ansible.builtin.import_playbook: playbook-all_nodes-add_WriteFreely_repo.yml
-
 - name: Run playbook-all_nodes-install_writefreely.yml
   ansible.builtin.import_playbook: playbook-all_nodes-install_writefreely.yml
 
