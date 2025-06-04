@@ -1,0 +1,39 @@
+---
+- name: Install writefreely using the upstream binary
+  hosts: all
+  gather_facts: true
+  become: false
+
+  vars:
+    writefreely_version: 0.15.1
+
+  handlers:
+
+    - name: Unpack the upstream tarball
+      ansible.builtin.unarchive:
+        src: /home/vagrant/writefreely_linux_amd64.tar.gz
+        dest: /home/vagrant/
+        remote_src: true
+
+  tasks:
+
+    - name: Download the upstream tarball
+      ansible.builtin.get_url:
+        url: "https://github.com/writefreely/writefreely/releases/download/v{{ writefreely_version }}/writefreely_{{ writefreely_version }}_linux_amd64.tar.gz"
+        dest: /home/vagrant/writefreely_linux_amd64.tar.gz
+        owner: vagrant
+        group: vagrant
+        mode: '0440'
+      notify:
+        - Unpack the upstream tarball
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: Create link in ~/bin/
+      ansible.builtin.file:
+        src: /home/vagrant/writefreely/writefreely
+        dest: /home/vagrant/bin/writefreely
+        state: link
+        owner: vagrant
+        group: vagrant
