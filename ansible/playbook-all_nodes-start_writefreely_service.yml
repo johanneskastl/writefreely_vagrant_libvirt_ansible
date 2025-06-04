@@ -1,0 +1,57 @@
+---
+- name: Start writefreely
+  hosts: all
+  gather_facts: true
+  become: true
+
+  handlers:
+
+    - name: Restart the systemd service
+      ansible.builtin.service:
+        name: writefreely
+        state: restarted
+      when:
+        - not writefreely_service_started.changed | bool
+
+  tasks:
+
+    - name: Create the systemd unit
+      ansible.builtin.template:
+        src: writefreely.service.j2
+        dest: /etc/systemd/system/writefreely.service
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
+      notify:
+        - Restart the systemd service
+
+    - name: Start the service
+      ansible.builtin.service:
+        name: writefreely
+        state: started
+        daemon_reload: true
+      register: writefreely_service_started
+
+    - name: Enable the service
+      ansible.builtin.service:
+        name: writefreely
+        enabled: true
+        daemon_reload: true
+
+    - name: Wait for URL to be available
+      delegate_to: localhost
+      become: false
+      ansible.builtin.uri:
+        url: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:8080"
+      register: result
+      until: "result.status == 200"
+      retries: 31
+      delay: 10
+
+    - name: URL
+      ansible.builtin.debug:
+        msg: "URL: http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:8080"
+
+    - name: Semaphore credentials
+      ansible.builtin.debug:
+        msg: "Use the username 'vagrant-libvirt' and the password 'atotallysecurepassword'"
