@@ -27,6 +27,9 @@
 # WriteFreely
 #
 
+- name: Run playbook-all_nodes-install_writefreely_using_the_upstream_binary.yml
+  ansible.builtin.import_playbook: playbook-all_nodes-install_writefreely_using_the_upstream_binary.yml
+
 - name: Run playbook-all_nodes-configure_writefreely.yml
   ansible.builtin.import_playbook: playbook-all_nodes-configure_writefreely.yml
 
