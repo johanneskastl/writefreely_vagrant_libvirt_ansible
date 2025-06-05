@@ -1,0 +1,62 @@
+---
+- name: Start nginx
+  hosts: all
+  gather_facts: true
+  become: true
+
+  handlers:
+
+    - name: Restart the systemd service
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+      when:
+        - not nginx_service_started.changed | bool
+
+  tasks:
+
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Create the nginx configuration
+      ansible.builtin.template:
+        src: nginx_writefreely.conf.j2
+        dest: /etc/nginx/conf.d/writefreely.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Restart the systemd service
+
+    - name: Start the service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        daemon_reload: true
+      register: nginx_service_started
+
+    - name: Enable the service
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        daemon_reload: true
+
+    - name: Wait for URL to be available
+      delegate_to: localhost
+      become: false
+      ansible.builtin.uri:
+        url: "http://writefreely.{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}.sslip.io/"
+      register: result
+      until: "result.status == 200"
+      retries: 1
+      delay: 10
+
+    - name: URL
+      ansible.builtin.debug:
+        msg: "URL: http://writefreely.{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}.sslip.io"
+
+    - name: Credentials
+      ansible.builtin.debug:
+        msg: "Use the username 'vagrant-libvirt' and the password 'atotallysecurepassword'"
