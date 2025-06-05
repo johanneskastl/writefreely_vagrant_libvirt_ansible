@@ -38,3 +38,6 @@
 
 - name: Run playbook-all_nodes-start_writefreely_service.yml
   ansible.builtin.import_playbook: playbook-all_nodes-start_writefreely_service.yml
+
+- name: Run playbook-all_nodes-install_configure_and_start_nginx.yml
+  ansible.builtin.import_playbook: playbook-all_nodes-install_configure_and_start_nginx.yml
