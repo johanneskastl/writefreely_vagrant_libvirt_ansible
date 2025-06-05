@@ -29,7 +29,7 @@
         state: directory
         owner: vagrant
         group: vagrant
-        mode: '0700'
+        mode: '0755'
       become: false
 
     - name: Copy /usr/share/doc/packages/writefreely/example-project-folder/ to /home/vagrant/writefreely/
