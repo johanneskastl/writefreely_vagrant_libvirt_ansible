@@ -33,6 +33,9 @@
 - name: Run playbook-all_nodes-install_writefreely.yml
   ansible.builtin.import_playbook: playbook-all_nodes-install_writefreely.yml
 
+- name: Run playbook-all_nodes-install_acl_and_prepare_ansible_directory.yml
+  ansible.builtin.import_playbook: playbook-all_nodes-install_acl_and_prepare_ansible_directory.yml
+
 - name: Run playbook-all_nodes-configure_writefreely.yml
   ansible.builtin.import_playbook: playbook-all_nodes-configure_writefreely.yml
 
