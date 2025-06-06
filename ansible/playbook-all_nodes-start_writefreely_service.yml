@@ -19,8 +19,8 @@
       ansible.builtin.template:
         src: writefreely.service.j2
         dest: /etc/systemd/system/writefreely.service
-        owner: vagrant
-        group: vagrant
+        owner: root
+        group: root
         mode: '0644'
       notify:
         - Restart the systemd service
