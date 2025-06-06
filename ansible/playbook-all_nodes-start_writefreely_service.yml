@@ -15,28 +15,16 @@
 
   tasks:
 
-    - name: Create the systemd unit
-      ansible.builtin.template:
-        src: writefreely.service.j2
-        dest: /etc/systemd/system/writefreely.service
-        owner: root
-        group: root
-        mode: '0644'
-      notify:
-        - Restart the systemd service
-
     - name: Start the service
       ansible.builtin.service:
         name: writefreely
         state: started
-        daemon_reload: true
       register: writefreely_service_started
 
     - name: Enable the service
       ansible.builtin.service:
         name: writefreely
         enabled: true
-        daemon_reload: true
 
     - name: Wait for URL to be available
       delegate_to: localhost
