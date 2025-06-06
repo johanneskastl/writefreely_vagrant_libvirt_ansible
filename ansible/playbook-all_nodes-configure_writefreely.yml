@@ -35,3 +35,10 @@
         creates: /var/lib/writefreely/.user_was_created_by_ansible
         chdir: /var/lib/writefreely/
       become_user: writefreely
+
+    - name: Make sure nginx can read everything in /var/lib/writefreely/
+      ansible.builtin.user:
+        name: nginx
+        groups: writefreely
+        append: true
+      become_user: root
