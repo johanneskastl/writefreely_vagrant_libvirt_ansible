@@ -9,10 +9,10 @@
     - name: Create the configuration
       ansible.builtin.template:
         src: config.ini.j2
-        dest: /var/lib/writefreely/config.ini
-        owner: writefreely
+        dest: /etc/writefreely/config.ini
+        owner: root
         group: writefreely
-        mode: '0644'
+        mode: '0640'
       become_user: writefreely
 
     - name: Run writefreely db init
