@@ -13,7 +13,7 @@
         owner: root
         group: writefreely
         mode: '0640'
-      become_user: writefreely
+      become_user: root
 
     - name: Run writefreely db init
       ansible.builtin.command:
